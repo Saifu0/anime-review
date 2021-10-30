@@ -14,7 +14,7 @@ class User(AbstractUser):
 class Review(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE)
-    anime = models.CharField(max_length=255)
+    anime_id = models.CharField(max_length=255)
     rating = models.IntegerField(default=0, validators=[
                                  MinValueValidator(1), MaxValueValidator(5)])
     description = models.TextField()
