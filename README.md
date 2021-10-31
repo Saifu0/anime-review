@@ -1,4 +1,4 @@
-# anime-review
+# Anime Review
 Simple Anime Review Full-Stack Application written in Django and React
 
 Deployed UI: https://anime-review.netlify.app/login
