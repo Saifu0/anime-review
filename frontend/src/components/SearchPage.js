@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
-import { Input, Select } from 'antd';
+import { useHistory } from "react-router-dom";
+import { Input, Select, Spin } from 'antd';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import AnimeList from './AnimeList';
@@ -21,16 +22,28 @@ const showAlert = (message, severity) => {
 }
 
 function SearchPage() {
+    const history = useHistory();
     const [searchBy, setSearchBy] = React.useState('title');
     const [open, setOpen] = React.useState(false);
     const [alert, setAlert] = React.useState(null);
     const [data, setData] = React.useState([]);
+    const [loading, setLoading] = React.useState(false);
+
+    React.useEffect(() => {
+        if (localStorage.getItem("refresh_token")) {
+            history.push("/");
+        } else {
+            history.push("/login");
+        }
+    }, []);
 
     const onSearch = (value) => {
+        setLoading(true);
         axios.get(`https://api.aniapi.com/v1/anime?${searchBy}=${value}`)
             .then((response) => {
                 console.log(response.data);
-                setData(response.data.data.documents);
+                setLoading(false);
+                setData(response.data.data.documents ? response.data.data.documents : 0);
                 setAlert(showAlert("Response: " + response.data.message, response.data.status_code === 404 ? "warning" : "success"));
                 setOpen(true);
             })
@@ -73,6 +86,7 @@ function SearchPage() {
                 {alert}
             </Snackbar>
 
+            {loading ? <Spin size="large" style={{ marginLeft: '5px' }} /> : <></>}
             {data.length > 0 ? <AnimeList data={data} /> : <></>}
         </div>
     )
