@@ -87,7 +87,7 @@ function SearchPage() {
             </Snackbar>
 
             {loading ? <Spin size="large" style={{ marginLeft: '5px' }} /> : <></>}
-            {data.length > 0 ? <AnimeList data={data} /> : <></>}
+            {data.length > 0 ? <AnimeList data={data.slice(1, Math.min(data.length+1, 11))} /> : <></>}
         </div>
     )
 }

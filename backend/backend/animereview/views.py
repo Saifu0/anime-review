@@ -1,4 +1,5 @@
 from rest_framework import status
+from rest_framework.decorators import permission_classes
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
@@ -41,6 +42,26 @@ class AddReviewView(APIView):
             return Response(data={
                 "error": "unable to add review"
             }, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CalculateAverageRatingView(APIView):
+    serializer_class = ReviewSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        anime_id = self.request.GET.get('anime_id')
+        reviews = Review.objects.filter(anime_id=anime_id)
+
+        total_reviews = len(reviews)
+        total_rating = 0
+        for review in reviews:
+            total_rating += review.rating
+        average_rating = (total_rating)/total_reviews
+
+        return Response(data={
+            "anime_id": anime_id,
+            "average_rating": average_rating
+        }, status=status.HTTP_200_OK)
 
 
 class MyObtainTokenPairView(TokenObtainPairView):
