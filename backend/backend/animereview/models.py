@@ -6,7 +6,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 class User(AbstractUser):
     '''
-        Inherting User model of auth.models, we might change current fields of User later
+        Inherting User model of auth.models, we might change current fields of User later.
     '''
     pass
 

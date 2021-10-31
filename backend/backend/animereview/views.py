@@ -1,21 +1,46 @@
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.generics import ListAPIView
 from rest_framework_simplejwt.views import TokenObtainPairView
-from .serializers import RegisterUserSerializer, MyTokenObtainPairSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from .serializers import RegisterUserSerializer, MyTokenObtainPairSerializer, ReviewSerializer
+from .models import User, Review
+import json
+
+
+class ListReviewView(ListAPIView):
+    serializer_class = ReviewSerializer
+
+    def get_queryset(self):
+        queryset = Review.objects.filter(anime_id=self.kwargs['anime_id'])
+        return queryset
 
 
 class AddReviewView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        print(request.data)
+        user_id = request.user.id
+        user = User.objects.get(id=user_id)
+        json_data = json.loads(request.body)
 
-        return Response(data={
-            "error": "unable to add review"
-        }, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            review = Review(
+                user=user,
+                anime_id=json_data["anime_id"],
+                rating=json_data["rating"],
+                description=json_data["description"]
+            )
+            review.save()
+            return Response(data={
+                "message": "Review added successfully!",
+            }, status=status.HTTP_200_OK)
+        except:
+            return Response(data={
+                "error": "unable to add review"
+            }, status=status.HTTP_400_BAD_REQUEST)
 
 
 class MyObtainTokenPairView(TokenObtainPairView):
