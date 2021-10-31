@@ -2,6 +2,7 @@
 Simple Anime Review Full-Stack Application written in Django and React
 
 Deployed UI: https://anime-review.netlify.app/login
+
 Deployed Backend: https://anime-review-pain.herokuapp.com/
 
 # Backend Setup
